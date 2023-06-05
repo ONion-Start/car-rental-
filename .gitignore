@@ -1,32 +1,197 @@
-# Prerequisites
-*.d
+// Car Rental System in C++ with enums
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+// An enum to represent the car type
+enum CarType {
+  SEDAN,
+  HATCHBACK,
+  SUV,
+  TRUCK
+};
 
-# Precompiled Headers
-*.gch
-*.pch
+// An enum to represent the rental status
+enum RentalStatus {
+  AVAILABLE,
+  RENTED
+};
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+// A class to represent a car
+class Car {
+  private:
+    string model; // the model of the car
+    string plate; // the license plate number of the car
+    CarType type; // the type of the car
+    RentalStatus status; // the rental status of the car
+  public:
+    // A constructor to initialize the car object
+    Car(string m, string p, CarType t) {
+      model = m;
+      plate = p;
+      type = t;
+      status = AVAILABLE; // by default, the car is available
+    }
 
-# Fortran module files
-*.mod
-*.smod
+    // A method to get the model of the car
+    string getModel() {
+      return model;
+    }
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+    // A method to get the plate number of the car
+    string getPlate() {
+      return plate;
+    }
 
-# Executables
-*.exe
-*.out
-*.app
+    // A method to get the type of the car
+    CarType getType() {
+      return type;
+    }
+
+    // A method to get the rental status of the car
+    RentalStatus getStatus() {
+      return status;
+    }
+
+    // A method to rent the car
+    void rent() {
+      if (status == AVAILABLE) { // if the car is available, rent it
+        status = RENTED;
+        cout << "You have rented the " << model << " with plate number " << plate << ".\n";
+      }
+      else { // if the car is not available, print an error message
+        cout << "Sorry, this car is already rented.\n";
+      }
+    }
+
+    // A method to return the car
+    void returnCar() {
+      if (status == RENTED) { // if the car is rented, return it
+        status = AVAILABLE;
+        cout << "You have returned the " << model << " with plate number " << plate << ".\n";
+      }
+      else { // if the car is not rented, print an error message
+        cout << "Sorry, this car is not rented.\n";
+      }
+    }
+};
+
+// A class to represent a rental system
+class RentalSystem {
+  private:
+    vector<Car> cars; // a vector of cars in the system
+  public:
+    // A constructor to initialize the rental system with some cars
+    RentalSystem() {
+      cars.push_back(Car("Toyota Corolla", "ABC-123", SEDAN));
+      cars.push_back(Car("Honda Civic", "DEF-456", HATCHBACK));
+      cars.push_back(Car("Ford Focus", "GHI-789", SEDAN));
+      cars.push_back(Car("Nissan Sentra", "JKL-012", SEDAN));
+      cars.push_back(Car("Hyundai Elantra", "MNO-345", HATCHBACK));
+      cars.push_back(Car("Jeep Wrangler", "PQR-678", SUV));
+      cars.push_back(Car("Chevrolet Tahoe", "STU-901", SUV));
+      cars.push_back(Car("Ford F-150", "VWX-234", TRUCK));
+      cars.push_back(Car("Ram 1500", "YZA-567", TRUCK));
+      cars.push_back(Car("Toyota Tacoma", "BCD-890", TRUCK));
+    }
+
+    // A method to display all the cars in the system
+    void displayCars() {
+      cout << "The following cars are available for rent:\n";
+      for (int i = 0; i < cars.size(); i++) { // loop through all the cars
+        cout << i + 1 << ". " << cars[i].getModel() << " (" << cars[i].getPlate() << ") - ";
+        switch (cars[i].getType()) { // display the type of the car using a switch statement
+          case SEDAN:
+            cout << "Sedan - ";
+            break;
+          case HATCHBACK:
+            cout << "Hatchback - ";
+            break;
+          case SUV:
+            cout << "SUV - ";
+            break;
+          case TRUCK:
+            cout << "Truck - ";
+            break;
+        }
+        switch (cars[i].getStatus()) { // display the status of the car using a switch statement
+          case AVAILABLE:
+            cout << "Available\n";
+            break;
+          case RENTED:
+            cout << "Rented\n";
+            break;
+        }
+      }
+      cout << "\n";
+    }
+
+    // A method to rent a car by its index in the vector
+    void rentCar(int index) {
+      if (index >= 0 && index < cars.size()) { // check if the index is valid or not
+        cars[index].rent(); // rent the car at that index
+      }
+      else { // if the index is invalid, print an error message
+        cout << "Invalid car number.\n";
+      }
+    }
+
+    // A method to return a car by its index in the vector
+    void returnCar(int index) {
+      if (index >= 0 && index < cars.size()) { // check if the index is valid or not
+        cars[index].returnCar(); // return the car at that index
+      }
+      else { // if the index is invalid, print an error message
+        cout << "Invalid car number.\n";
+      }
+    }
+};
+
+// A function to display the menu options
+void displayMenu() {
+  cout << "Welcome to Car Rental System!\n";
+  cout << "Please choose an option:\n";
+  cout << "1. Display all cars\n";
+  cout << "2. Rent a car\n";
+  cout << "3. Return a car\n";
+  cout << "4. Exit\n";
+  cout << "\n";
+}
+
+// The main function
+int main() {
+  RentalSystem rs; // create a rental system object
+  int choice; // to store the user's choice
+  int carNumber; // to store the car number
+  bool exit = false; // to control the loop
+  while (!exit) { // loop until the user chooses to exit
+    displayMenu(); // display the menu options
+    cin >> choice; // get the user's choice
+    switch (choice) { // perform different actions based on the choice
+      case 1: // display all cars
+        rs.displayCars();
+        break;
+      case 2: // rent a car
+        cout << "Enter the car number you want to rent: ";
+        cin >> carNumber;
+        rs.rentCar(carNumber - 1); // rent the car by its index (car number - 1)
+        break;
+      case 3: // return a car
+        cout << "Enter the car number you want to return: ";
+        cin >> carNumber;
+        rs.returnCar(carNumber - 1); // return the car by its index (car number - 1)
+        break;
+      case 4: // exit
+        cout << "Thank you for using Car Rental System. Goodbye!\n";
+        exit = true; // set exit to true to end the loop
+        break;
+      default: // invalid choice
+        cout << "Invalid option. Please try again.\n";
+        break;
+    }
+    cout << "\n";
+  }
+  return 0;
+}
+
